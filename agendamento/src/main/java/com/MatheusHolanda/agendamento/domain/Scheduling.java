@@ -11,8 +11,11 @@ import java.time.LocalDateTime;
 public class Scheduling implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    private LocalDateTime date;
 
     @ManyToOne
     private Client client;
@@ -20,7 +23,6 @@ public class Scheduling implements Serializable {
     @ManyToOne
     private Professional professional;
 
-    private LocalDateTime date;
 
     @Enumerated(EnumType.STRING)
     private SchedulingStatus status;

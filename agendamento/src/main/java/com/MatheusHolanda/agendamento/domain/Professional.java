@@ -3,7 +3,6 @@ package com.MatheusHolanda.agendamento.domain;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
@@ -108,6 +107,14 @@ public class Professional implements Serializable {
 
     public void setEndOfBreak(LocalTime endOfBreak) {
         this.endOfBreak = endOfBreak;
+    }
+
+    public List<Services> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Services> services) {
+        this.services = services;
     }
 
     @Override

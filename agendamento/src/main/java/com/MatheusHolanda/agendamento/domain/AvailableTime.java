@@ -16,17 +16,17 @@ public class AvailableTime implements Serializable {
     @ManyToOne
     private Professional professional;
 
-    private LocalDateTime data;
+    private LocalDateTime dateTime ;
 
     private boolean available;
 
     public AvailableTime() {
     }
 
-    public AvailableTime(Long id, Professional professional, LocalDateTime data, boolean available) {
+    public AvailableTime(Long id, Professional professional, LocalDateTime dateTime , boolean available) {
         this.id = id;
         this.professional = professional;
-        this.data = data;
+        this.dateTime  = dateTime ;
         this.available = available;
     }
 
@@ -46,12 +46,12 @@ public class AvailableTime implements Serializable {
         this.professional = professional;
     }
 
-    public LocalDateTime getData() {
-        return data;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setData(LocalDateTime data) {
-        this.data = data;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public boolean isAvailable() {

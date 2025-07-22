@@ -42,11 +42,15 @@ public class DbSeeder {
             prof3.setStartOfBreak(LocalTime.parse("14:00"));
             prof3.setEndOfBreak(LocalTime.parse("15:30"));
 
-            Client client1 = new Client(null, "Julio silva", "<Julio_Camargo@hotmail.com>", "(21) 97752-4532");
+            Client client1 = new Client(null, "Julio silva", "Julio_Camargo@hotmail.com", "(21) 97752-4532");
 
+            Client client2 = new Client(null, "Luciano Feitosa Ferraz", "Luciano_Oferraz@gmail.com", "(21) 9176-33232");
+
+            Client client3 = new Client(null, "Ronaldo Feliciano", "Ronaldinho.feliciano@gmail.com", "(21) 9743-22542");
 
 
             professionalRepository.saveAll(List.of(prof1, prof2, prof3));
+            clientRepository.saveAll(List.of(client1, client2, client3));
         };
     }
 
