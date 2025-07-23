@@ -1,5 +1,6 @@
 package com.MatheusHolanda.agendamento.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -17,5 +18,30 @@ public class Services implements Serializable {
     private Double price;
 
     @ManyToMany(mappedBy = "services")
-    private List<Professional> professionals;
+    @JsonIgnore
+    private List<Scheduling> schedulings;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
 }

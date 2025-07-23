@@ -25,7 +25,7 @@ public class Professional implements Serializable {
     @OneToMany(mappedBy = "professional")
     private List<AvailableTime> availableTimes;
 
-    @OneToMany(mappedBy = "professional")
+    @OneToMany(mappedBy = "professional", fetch = FetchType.EAGER)
     private List<Scheduling> schedulings;
 
     @ManyToMany

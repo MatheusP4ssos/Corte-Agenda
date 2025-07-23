@@ -57,4 +57,13 @@ public class ClientController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<Client>> findByEmail(@RequestParam String email) {
+        List<Client> clients = clientRepository.findByEmail(email);
+        if (clients.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(clients);
+        }
+    }
 }

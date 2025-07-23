@@ -26,7 +26,7 @@ public class AvailableTime implements Serializable {
     public AvailableTime(Long id, Professional professional, LocalDateTime dateTime , boolean available) {
         this.id = id;
         this.professional = professional;
-        this.dateTime  = dateTime ;
+        this.dateTime = dateTime;
         this.available = available;
     }
 
