@@ -87,4 +87,12 @@ public class Scheduling implements Serializable {
     public void setStatus(SchedulingStatus status) {
         this.status = status;
     }
+
+    public List<Services> getServices() {
+        return services;
+    }
+
+    public void setServices(List<Services> services) {
+        this.services = services;
+    }
 }

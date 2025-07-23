@@ -11,7 +11,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+/**
+ * Serviço para gerenciamento de horários disponíveis.
+ * Este serviço permite listar horários disponíveis, adicionar horários e verificar disponibilidade.
+ */
+
+@Service // Indica que esta classe é um serviço Spring
 public class AvailableTimeService {
 
     private final AvailableTimeRepository availableTimeRepository;
@@ -20,31 +25,43 @@ public class AvailableTimeService {
         this.availableTimeRepository = availableTimeRepository;
     }
 
+    /**
+     * Lista os horários disponíveis para um profissional em uma data específica.
+     *
+     * @param professional O profissional cujos horários serão verificados.
+     * @param date        A data para a qual os horários disponíveis serão listados.
+     * @param intervalMinutes O intervalo em minutos entre os horários disponíveis.
+     * @return Uma lista de LocalDateTime representando os horários disponíveis.
+     */
     public List<LocalDateTime> listAvailableTimes(
             Professional professional,
             LocalDate date,
             int intervalMinutes
     ) {
-        LocalTime opening = LocalTime.of(8, 0);
-        LocalTime closing = LocalTime.of(18, 0);
-        LocalTime startOfBreak = professional.getStartOfBreak();
-        LocalTime endOfBreak = professional.getEndOfBreak();
+        LocalTime opening = LocalTime.of(8, 0); // Horário de abertura
+        LocalTime closing = LocalTime.of(18, 0); // Horário de fechamento
+        LocalTime startOfBreak = professional.getStartOfBreak(); // Horário de início do intervalo
+        LocalTime endOfBreak = professional.getEndOfBreak(); // Horário de fim do intervalo
 
         List<LocalDateTime> availableTimes = new ArrayList<>();
         LocalDateTime current = LocalDateTime.of(date, opening);
 
+        // Verifica se o horário de abertura é antes do horário de fechamento
         while (!current.isAfter(LocalDateTime.of(date, closing).minusMinutes(intervalMinutes))) {
             LocalTime currentTime = current.toLocalTime();
 
+            // Verifica se o horário atual está dentro do intervalo de pausa
             boolean isInBreak = startOfBreak != null && endOfBreak != null &&
                     !currentTime.isBefore(startOfBreak) && currentTime.isBefore(endOfBreak);
 
+            // Verifica se o horário atual já está ocupado
             boolean isOccupied = availableTimeRepository.existsByProfessionalAndDateTimeAndAvailableFalse(professional, current);
 
+            // Se o horário não está no intervalo de pausa e não está ocupado, adiciona à lista
             if (!isInBreak && !isOccupied) {
                 availableTimes.add(current);
             }
-            current = current.plusMinutes(intervalMinutes);
+            current = current.plusMinutes(intervalMinutes); // Incrementa o horário atual pelo intervalo especificado
         }
         return availableTimes;
     }

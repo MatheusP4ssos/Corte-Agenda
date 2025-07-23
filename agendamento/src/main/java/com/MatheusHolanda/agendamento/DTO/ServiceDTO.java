@@ -1,25 +1,22 @@
-package com.MatheusHolanda.agendamento.domain;
+package com.MatheusHolanda.agendamento.DTO;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import com.MatheusHolanda.agendamento.domain.Services;
 
-import java.io.Serializable;
-import java.util.List;
+/**
+ * Data Transfer Object for Service.
+ * This class is used to transfer service data between layers.
+ */
 
-@Entity
-public class Services implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ServiceDTO {
     private Long id;
-
     private String name;
     private Double price;
 
-    @ManyToMany(mappedBy = "services")
-    @JsonIgnore
-    private List<Scheduling> schedulings;
+    public ServiceDTO(Services service) {
+        this.id = service.getId();
+        this.name = service.getName();
+        this.price = service.getPrice();
+    }
 
     public Long getId() {
         return id;
@@ -44,6 +41,4 @@ public class Services implements Serializable {
     public void setPrice(Double price) {
         this.price = price;
     }
-
-
 }

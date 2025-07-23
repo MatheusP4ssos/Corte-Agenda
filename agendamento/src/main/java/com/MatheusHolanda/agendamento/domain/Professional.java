@@ -7,11 +7,17 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-@Entity
+/**
+ * Classe que representa um profissional no sistema de agendamento.
+ * Um profissional pode ter vários horários disponíveis e agendamentos associados.
+ */
+
+@Entity // Anotação para indicar que esta classe é uma entidade JPA
 public class Professional implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
+    @Id // Anotação para indicar que este campo é a chave primária da entidade
+    // @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID, usando a estratégia de identidade do banco de dados
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
@@ -22,16 +28,19 @@ public class Professional implements Serializable {
     private LocalTime startOfBreak;
     private LocalTime endOfBreak;
 
+    // Mapeia a relação com a entidade AvailableTime, onde "professional" é o campo na entidade AvailableTime que referencia este Professional
     @OneToMany(mappedBy = "professional")
     private List<AvailableTime> availableTimes;
 
+    // Mapeia a relação com a entidade Scheduling, onde "professional" é o campo na entidade Scheduling que referencia este Professional
     @OneToMany(mappedBy = "professional", fetch = FetchType.EAGER)
     private List<Scheduling> schedulings;
 
+    // Mapeia a relação muitos-para-muitos com a entidade Services, usando uma tabela intermediária chamada "professional_service"
     @ManyToMany
-    @JoinTable(name = "professional_service",
-            joinColumns = @JoinColumn(name = "professional_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id"))
+    @JoinTable(name = "professional_service", // Nome da tabela intermediária
+            joinColumns = @JoinColumn(name = "professional_id"), // Coluna que referencia o Professional
+            inverseJoinColumns = @JoinColumn(name = "service_id")) // Coluna que referencia o Service
     private List<Services> services;
 
 

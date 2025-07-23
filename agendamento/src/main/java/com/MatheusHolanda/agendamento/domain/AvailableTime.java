@@ -5,25 +5,30 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Entity
+/**
+ * Classe que representa o horário disponível de um profissional.
+ * Contém informações sobre o profissional, data e hora do horário e se está disponível.
+ */
+
+@Entity // Anotação para indicar que esta classe é uma entidade JPA
 public class AvailableTime implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id // Anotação para indicar que este campo é a chave primária da entidade
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID, usando a estratégia de identidade do banco de dados
     private Long id;
 
-    @ManyToOne
+    @ManyToOne // Anotação para indicar que este campo é uma relação muitos-para-um com a entidade Professional
     private Professional professional;
 
-    private LocalDateTime dateTime ;
+    private LocalDateTime dateTime;
 
     private boolean available;
 
     public AvailableTime() {
     }
 
-    public AvailableTime(Long id, Professional professional, LocalDateTime dateTime , boolean available) {
+    public AvailableTime(Long id, Professional professional, LocalDateTime dateTime, boolean available) {
         this.id = id;
         this.professional = professional;
         this.dateTime = dateTime;
