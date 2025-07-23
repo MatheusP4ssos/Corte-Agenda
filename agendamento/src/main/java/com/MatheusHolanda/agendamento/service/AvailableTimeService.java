@@ -1,6 +1,7 @@
 package com.MatheusHolanda.agendamento.service;
 
 import com.MatheusHolanda.agendamento.domain.AvailableTime;
+import com.MatheusHolanda.agendamento.domain.Client;
 import com.MatheusHolanda.agendamento.domain.Professional;
 import com.MatheusHolanda.agendamento.repository.AvailableTimeRepository;
 import org.springframework.stereotype.Service;

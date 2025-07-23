@@ -2,6 +2,7 @@ package com.MatheusHolanda.agendamento.service;
 
 import com.MatheusHolanda.agendamento.domain.Client;
 import com.MatheusHolanda.agendamento.domain.Professional;
+import com.MatheusHolanda.agendamento.domain.Scheduling;
 import com.MatheusHolanda.agendamento.repository.ClientRepository;
 import com.MatheusHolanda.agendamento.repository.ProfessionalRepository;
 import com.MatheusHolanda.agendamento.repository.SchedulingRepository;
@@ -18,7 +19,6 @@ public class SchedulingService {
      * Este serviço permite agendar consultas, cancelar agendamentos e listar consultas por cliente.
      */
 
-
     private final AvailableTimeService availableTimeService;
     private final SchedulingRepository schedulingRepository;
     private final ClientRepository clientRepository;
@@ -31,13 +31,13 @@ public class SchedulingService {
         this.professionalRepository = professionalRepository;
     }
 
-   /**
+    /**
      * Agenda uma consulta para um cliente com um profissional em um horário específico.
      *
-     * @param clientId      ID do cliente que está agendando a consulta.
+     * @param clientId       ID do cliente que está agendando a consulta.
      * @param professionalId ID do profissional com quem a consulta será agendada.
-     * @param dateTime      Data e hora da consulta.
-     * @throws RuntimeException se o cliente ou profissional não for encontrado.
+     * @param dateTime       Data e hora da consulta.
+     * @throws RuntimeException         se o cliente ou profissional não for encontrado.
      * @throws IllegalArgumentException se o horário não estiver disponível.
      */
     public void scheduleAppointment(Long clientId, Long professionalId, LocalDateTime dateTime) {
@@ -50,17 +50,39 @@ public class SchedulingService {
             throw new IllegalArgumentException("Horário não disponível");
         }
     }
+
+    // /**
+     * Realiza o agendamento de serviços para um cliente.
+     * Se o cliente já tiver realizado 9 serviços, o próximo será gratuito.
+     *
+     * @param client      O cliente que está realizando o agendamento.
+     * @param scheduling  O agendamento que contém os serviços a serem realizados.
+     */
+    public void performScheduling(Client client, Scheduling scheduling) {
+        int schedulingCount = client.getServicesPerformed();
+        boolean isFree = (schedulingCount + 1) % 10 == 0;
+
+        if (isFree) {
+            scheduling.getServices().forEach(service -> service.setPrice(0.0));
+        }
+
+        client.setServicesPerformed(schedulingCount + 1);
+        clientRepository.save(client);
+        schedulingRepository.save(scheduling);
+    }
 }
 
-    /**
-    public void cancelAppointment(Long schedulingId) {
-        // Implement cancellation logic here
-        // Find the scheduling by ID and update its status to cancelled
-    }
 
-    public List<Scheduling> getAppointmentsByClient(Long clientId) {
-        // Implement logic to retrieve appointments for a specific client
-        return schedulingRepository.findByClientId(clientId);
-    }
-}
-/**/
+/**
+ * public void cancelAppointment(Long schedulingId) {
+ * // Implement cancellation logic here
+ * // Find the scheduling by ID and update its status to cancelled
+ * }
+ * <p>
+ * public List<Scheduling> getAppointmentsByClient(Long clientId) {
+ * // Implement logic to retrieve appointments for a specific client
+ * return schedulingRepository.findByClientId(clientId);
+ * }
+ * }
+ * /
+ **/

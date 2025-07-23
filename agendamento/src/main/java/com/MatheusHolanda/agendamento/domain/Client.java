@@ -64,6 +64,13 @@ public class Client implements Serializable {
         this.phone = phone;
     }
 
+    public int getServicesPerformed() {
+        return servicesPerformed;
+    }
+
+    public void setServicesPerformed(int servicesPerformed) {
+        this.servicesPerformed = servicesPerformed;
+    }
 
     @Override // Método para comparar dois objetos Client
     public boolean equals(Object o) {
