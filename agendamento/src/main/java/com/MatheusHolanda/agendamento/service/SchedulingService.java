@@ -79,13 +79,6 @@ public class SchedulingService {
     }
 
 
-    public void cancelAppointment(Long schedulingId) {
-        Scheduling scheduling = schedulingRepository.findById(schedulingId)
-                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
-        scheduling.setStatus(SchedulingStatus.CANCELED);
-        schedulingRepository.save(scheduling);
-    }
-
     public void rescheduleAppointment(Long schedulingId, LocalDateTime newDateTime) {
         Scheduling scheduling = schedulingRepository.findById(schedulingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
