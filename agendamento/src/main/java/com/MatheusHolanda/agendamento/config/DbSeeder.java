@@ -69,6 +69,10 @@ public class DbSeeder {
             Corte_Sobrancelha.setName("Corte de Sobrancelha");
             Corte_Sobrancelha.setPrice(10.0);
 
+            Services Pintura_Cabelo = new Services();
+            Pintura_Cabelo.setName("Pintura de Cabelo");
+            Pintura_Cabelo.setPrice(50.0);
+
             // Salvar profissionais, clientes e serviços
             List<Professional> profissionaisSalvos = professionalRepository.saveAll(List.of(prof1, prof2, prof3));
             List<Client> clientesSalvos = clientRepository.saveAll(List.of(client1, client2, client3));
