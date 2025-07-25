@@ -1,5 +1,6 @@
 package com.MatheusHolanda.agendamento.service;
 
+import com.MatheusHolanda.agendamento.SchedullingException.SchedulingConflictException;
 import com.MatheusHolanda.agendamento.domain.AvailableTime;
 import com.MatheusHolanda.agendamento.domain.Client;
 import com.MatheusHolanda.agendamento.domain.Professional;
@@ -73,7 +74,7 @@ public class AvailableTimeService {
             boolean available
     ) {
         if (availableTimeRepository.existsByProfessionalAndDateTimeAndAvailableFalse(professional, dateTime)) {
-            throw new IllegalArgumentException("Este horário está ocupado.");
+            throw new SchedulingConflictException("Este horário está ocupado.");
         }
         AvailableTime availableTime = new AvailableTime();
         availableTime.setProfessional(professional);

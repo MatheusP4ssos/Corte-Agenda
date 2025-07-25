@@ -1,8 +1,11 @@
 package com.MatheusHolanda.agendamento.service;
 
+import com.MatheusHolanda.agendamento.SchedullingException.ResourceNotFoundException;
+import com.MatheusHolanda.agendamento.SchedullingException.SchedulingConflictException;
 import com.MatheusHolanda.agendamento.domain.Client;
 import com.MatheusHolanda.agendamento.domain.Professional;
 import com.MatheusHolanda.agendamento.domain.Scheduling;
+import com.MatheusHolanda.agendamento.domain.enums.SchedulingStatus;
 import com.MatheusHolanda.agendamento.repository.ClientRepository;
 import com.MatheusHolanda.agendamento.repository.ProfessionalRepository;
 import com.MatheusHolanda.agendamento.repository.SchedulingRepository;
@@ -42,21 +45,21 @@ public class SchedulingService {
      */
     public void scheduleAppointment(Long clientId, Long professionalId, LocalDateTime dateTime) {
         Client client = clientRepository.findById(clientId).orElseThrow(()
-                -> new RuntimeException("Cliente não encontrado"));
+                -> new ResourceNotFoundException("Cliente não encontrado"));
         Professional professional = professionalRepository.findById(professionalId).orElseThrow(()
-                -> new RuntimeException("Profissional não encontrado"));
+                -> new ResourceNotFoundException("Profissional não encontrado"));
         boolean isAvailable = availableTimeService.isTimeAvailable(professional, dateTime);
         if (!isAvailable) {
-            throw new IllegalArgumentException("Horário não disponível");
+            throw new SchedulingConflictException("Horário não disponível");
         }
     }
 
-    // /**
+    /**
      * Realiza o agendamento de serviços para um cliente.
      * Se o cliente já tiver realizado 9 serviços, o próximo será gratuito.
      *
-     * @param client      O cliente que está realizando o agendamento.
-     * @param scheduling  O agendamento que contém os serviços a serem realizados.
+     * @param client     O cliente que está realizando o agendamento.
+     * @param scheduling O agendamento que contém os serviços a serem realizados.
      */
     public void performScheduling(Client client, Scheduling scheduling) {
         int schedulingCount = client.getServicesPerformed();
@@ -70,19 +73,32 @@ public class SchedulingService {
         clientRepository.save(client);
         schedulingRepository.save(scheduling);
     }
+
+
+    public void cancelAppointment(Long schedulingId) {
+        Scheduling scheduling = schedulingRepository.findById(schedulingId)
+                .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+        scheduling.setStatus(SchedulingStatus.CANCELED);
+        schedulingRepository.save(scheduling);
+    }
+
+    public void rescheduleAppointment(Long schedulingId, LocalDateTime newDateTime) {
+        Scheduling scheduling = schedulingRepository.findById(schedulingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
+
+        if (newDateTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Não é possivel remarcar para uma data no passado");
+        }
+
+        Professional professional = scheduling.getProfessional();
+        boolean isAvailable = availableTimeService.isTimeAvailable(professional, newDateTime);
+
+        if (!isAvailable) {
+            throw new SchedulingConflictException("Novo horário não disponível");
+        }
+
+        scheduling.setDate(newDateTime);
+        scheduling.setStatus(SchedulingStatus.SCHEDULED);
+        schedulingRepository.save(scheduling);
+    }
 }
-
-
-/**
- * public void cancelAppointment(Long schedulingId) {
- * // Implement cancellation logic here
- * // Find the scheduling by ID and update its status to cancelled
- * }
- * <p>
- * public List<Scheduling> getAppointmentsByClient(Long clientId) {
- * // Implement logic to retrieve appointments for a specific client
- * return schedulingRepository.findByClientId(clientId);
- * }
- * }
- * /
- **/
