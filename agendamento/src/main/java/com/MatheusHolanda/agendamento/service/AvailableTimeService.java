@@ -91,4 +91,16 @@ public class AvailableTimeService {
         boolean isOccupied = availableTimeRepository.existsByProfessionalAndDateTimeAndAvailableFalse(professional, dateTime);
         return !isOccupied; // Retorna true se não estiver ocupado, ou seja, disponível
     }
+
+    public List<String> getAvailableTimes(Professional selectedProfessional) {
+        List<AvailableTime> availableTimes = availableTimeRepository.findByProfessionalAndAvailableTrue(selectedProfessional);
+        List<String> timeSlots = new ArrayList<>();
+
+        for (AvailableTime availableTime : availableTimes) {
+            LocalDateTime dateTime = availableTime.getDateTime();
+            String timeSlot = dateTime.toLocalDate() + " " + dateTime.toLocalTime();
+            timeSlots.add(timeSlot);
+        }
+        return timeSlots;
+    }
 }

@@ -15,7 +15,8 @@ public class AvailableTime implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id // Anotação para indicar que este campo é a chave primária da entidade
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID, usando a estratégia de identidade do banco de dados
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // Geração automática do ID, usando a estratégia de identidade do banco de dados
     private Long id;
 
     @ManyToOne // Anotação para indicar que este campo é uma relação muitos-para-um com a entidade Professional
@@ -66,4 +67,5 @@ public class AvailableTime implements Serializable {
     public void setAvailable(boolean available) {
         this.available = available;
     }
+
 }

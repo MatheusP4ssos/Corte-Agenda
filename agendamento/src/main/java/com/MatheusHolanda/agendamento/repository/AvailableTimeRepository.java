@@ -5,6 +5,7 @@ import com.MatheusHolanda.agendamento.domain.Professional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,4 +19,6 @@ public interface AvailableTimeRepository extends JpaRepository <AvailableTime, L
 
 // Busca um horário disponível para um profissional em uma data e hora específica
 Optional<AvailableTime> findByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime);
+
+    List<AvailableTime> findByProfessionalAndAvailableTrue(Professional selectedProfessional);
 }
