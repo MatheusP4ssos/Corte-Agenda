@@ -42,23 +42,23 @@ public class DbSeeder {
 
         // Profissionais são criados com horários de intervalo definidos.
         return args -> {
-            Professional prof1 = new Professional(null, "Rafael Duarte", "Duarte_Ducorte@gmail.com", "(21)9828-1876");
+            Professional prof1 = new Professional(null, "Rafael Duarte", "Duarte_Ducorte@gmail.com", "2198281876");
             prof1.setStartOfBreak(LocalTime.parse("12:00"));
             prof1.setEndOfBreak(LocalTime.parse("13:30"));
 
-            Professional prof2 = new Professional(null, "Diego Baptista", "<DG_ducorte@gmail.com>", "(21)9882-43118");
+            Professional prof2 = new Professional(null, "Diego Baptista", "DG_ducorte@gmail.com", "21988243118");
             prof2.setStartOfBreak(LocalTime.parse("10:00"));
             prof2.setEndOfBreak(LocalTime.parse("11:30"));
 
-            Professional prof3 = new Professional(null, "Maicon Fernandes Lira", "Maikin@Ducorte@gmail.com", "(21)9577-12543");
+            Professional prof3 = new Professional(null, "Maicon Fernandes Lira", "MaikinDucorte@gmail.com", "21957712543");
             prof3.setStartOfBreak(LocalTime.parse("14:00"));
             prof3.setEndOfBreak(LocalTime.parse("15:30"));
 
             // Clientes são criados com informações básicas
-            Client client1 = new Client(null, "Julio silva", "Julio_Camargo@hotmail.com", "(21) 97752-4532");
-            Client client2 = new Client(null, "Luciano Feitosa Ferraz", "Luciano_Oferraz@gmail.com", "(21) 9176-33232");
-            Client client3 = new Client(null, "Ronaldo Feliciano", "Ronaldinho.feliciano@gmail.com", "(21) 9743-22542");
-            Client client4 = new Client(null, "Matheus Holanda", "matheus_Oholanda@gmail.com", "(21) 9876-5432");
+            Client client1 = new Client(null, "Julio silva", "Julio_Camargo@hotmail.com", "21977524532");
+            Client client2 = new Client(null, "Luciano Feitosa Ferraz", "Luciano_Oferraz@gmail.com", "21917633232");
+            Client client3 = new Client(null, "Ronaldo Feliciano", "Ronaldinho.feliciano@gmail.com", "21974322542");
+            Client client4 = new Client(null, "Matheus Holanda", "matheus_Oholanda@gmail.com", "2198765432");
 
             // Serviços são criados com nome e preço
             Services Corte_Tesoura = new Services();

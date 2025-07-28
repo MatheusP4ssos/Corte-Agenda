@@ -2,34 +2,39 @@ package com.MatheusHolanda.agendamento.DTO;
 
 import com.MatheusHolanda.agendamento.domain.Scheduling;
 import com.MatheusHolanda.agendamento.domain.enums.SchedulingStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Data Transfer Object for Scheduling.
- * This class is used to transfer scheduling data between layers.
- */
-
+@JsonIgnoreProperties({"professional"})
 public class SchedulingDTO {
     private Long id;
-    private LocalDateTime date;
+    private LocalDateTime dateTime;
     private ClientDTO client;
-    private List<ServiceDTO> services;
+    private ProfessionalDTO professional;
     private SchedulingStatus status;
+    private List<ServiceDTO> services;
 
     public SchedulingDTO(Scheduling scheduling) {
         this.id = scheduling.getId();
-        this.date = scheduling.getDate();
+        this.dateTime = scheduling.getDate();
         this.status = scheduling.getStatus();
-        this.client = new ClientDTO(scheduling.getClient());
+
+        if (scheduling.getClient() != null) {
+            this.client = new ClientDTO(scheduling.getClient());
+        }
+
+        // NÃO atribuir ProfessionalDTO aqui para evitar ciclo
+        this.professional = null;
 
         if (scheduling.getServices() != null) {
             this.services = scheduling.getServices().stream()
-                    .map(ServiceDTO::new)  // Usando o construtor de ServiceDTO
+                    .map(ServiceDTO::new)
                     .toList();
         }
     }
+
 
     public Long getId() {
         return id;
@@ -39,12 +44,12 @@ public class SchedulingDTO {
         this.id = id;
     }
 
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public ClientDTO getClient() {
@@ -55,12 +60,12 @@ public class SchedulingDTO {
         this.client = client;
     }
 
-    public List<ServiceDTO> getServices() {
-        return services;
+    public ProfessionalDTO getProfessional() {
+        return professional;
     }
 
-    public void setServices(List<ServiceDTO> services) {
-        this.services = services;
+    public void setProfessional(ProfessionalDTO professional) {
+        this.professional = professional;
     }
 
     public SchedulingStatus getStatus() {
@@ -69,5 +74,13 @@ public class SchedulingDTO {
 
     public void setStatus(SchedulingStatus status) {
         this.status = status;
+    }
+
+    public List<ServiceDTO> getServices() {
+        return services;
+    }
+
+    public void setServices(List<ServiceDTO> services) {
+        this.services = services;
     }
 }

@@ -1,10 +1,9 @@
 package com.MatheusHolanda.agendamento.service;
 
-import com.MatheusHolanda.agendamento.SchedullingException.SchedulingConflictException;
 import com.MatheusHolanda.agendamento.domain.AvailableTime;
-import com.MatheusHolanda.agendamento.domain.Client;
 import com.MatheusHolanda.agendamento.domain.Professional;
 import com.MatheusHolanda.agendamento.repository.AvailableTimeRepository;
+import jakarta.validation.ValidationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,8 +29,8 @@ public class AvailableTimeService {
     /**
      * Lista os horários disponíveis para um profissional em uma data específica.
      *
-     * @param professional O profissional cujos horários serão verificados.
-     * @param date        A data para a qual os horários disponíveis serão listados.
+     * @param professional    O profissional cujos horários serão verificados.
+     * @param date            A data para a qual os horários disponíveis serão listados.
      * @param intervalMinutes O intervalo em minutos entre os horários disponíveis.
      * @return Uma lista de LocalDateTime representando os horários disponíveis.
      */
@@ -40,6 +39,19 @@ public class AvailableTimeService {
             LocalDate date,
             int intervalMinutes
     ) {
+
+        if (professional == null) {
+            throw new ValidationException("O profissional não pode ser nulo.");
+        }
+
+        if (date == null) {
+            throw new ValidationException("A data não pode ser nula.");
+        }
+
+        if (intervalMinutes <= 0) {
+            throw new ValidationException("O intervalo deve ser maior que zero.");
+        }
+
         LocalTime opening = LocalTime.of(8, 0); // Horário de abertura
         LocalTime closing = LocalTime.of(18, 0); // Horário de fechamento
         LocalTime startOfBreak = professional.getStartOfBreak(); // Horário de início do intervalo
@@ -57,7 +69,8 @@ public class AvailableTimeService {
                     !currentTime.isBefore(startOfBreak) && currentTime.isBefore(endOfBreak);
 
             // Verifica se o horário atual já está ocupado
-            boolean isOccupied = availableTimeRepository.existsByProfessionalAndDateTimeAndAvailableFalse(professional, current);
+            boolean isOccupied = availableTimeRepository.
+                    existsByProfessionalAndDateTimeAndAvailableFalse(professional, current);
 
             // Se o horário não está no intervalo de pausa e não está ocupado, adiciona à lista
             if (!isInBreak && !isOccupied) {
@@ -68,14 +81,19 @@ public class AvailableTimeService {
         return availableTimes;
     }
 
-    public void addAvailableTime(
-            Professional professional,
-            LocalDateTime dateTime,
-            boolean available
-    ) {
-        if (availableTimeRepository.existsByProfessionalAndDateTimeAndAvailableFalse(professional, dateTime)) {
-            throw new SchedulingConflictException("Este horário está ocupado.");
+    public void addAvailableTime(Professional professional,LocalDateTime dateTime, boolean available) {
+        if (professional == null) {
+            throw new ValidationException("O profissional não pode ser nulo.");
         }
+        if (dateTime == null) {
+            throw new ValidationException("A data e hora não podem ser nulas.");
+        }
+
+        boolean exists = availableTimeRepository.existsByProfessionalAndDateTime(professional, dateTime);
+        if (exists) {
+            throw new ValidationException("Já existe um horário registrado para este profissional nesta data e hora.");
+        }
+
         AvailableTime availableTime = new AvailableTime();
         availableTime.setProfessional(professional);
         availableTime.setDateTime(dateTime);
@@ -93,8 +111,12 @@ public class AvailableTimeService {
     }
 
     public List<String> getAvailableTimes(Professional selectedProfessional) {
+        if (selectedProfessional == null) {
+            throw new ValidationException("O profissional selecionado não pode ser nulo.");
+        }
         List<AvailableTime> availableTimes = availableTimeRepository.findByProfessionalAndAvailableTrue(selectedProfessional);
         List<String> timeSlots = new ArrayList<>();
+
 
         for (AvailableTime availableTime : availableTimes) {
             LocalDateTime dateTime = availableTime.getDateTime();

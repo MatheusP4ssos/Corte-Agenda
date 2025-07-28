@@ -1,6 +1,9 @@
 package com.MatheusHolanda.agendamento.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -20,8 +23,23 @@ public class Professional implements Serializable {
     // @GeneratedValue(strategy = GenerationType.IDENTITY) // Geração automática do ID, usando a estratégia de identidade do banco de dados
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false) // Coluna não pode ser nula no banco de dados
+    @NotBlank(message = "O nome do profissional é obrigatório") // Validação para garantir que o nome não seja vazio
+    @Size(min = 3, max = 100, message = "O nome do profissional deve ter entre 3 e 100 caracteres") // Validação de tamanho do nome
+    @jakarta.validation.constraints.Pattern(regexp = "^[a-zA-Z\\s]+$", message = "O nome do profissional deve conter apenas letras e espaços") // Validação de formato
     private String name;
+
+    @Column(nullable = false, unique = true) // Coluna não pode ser nula e deve ser única no banco de dados
+    @NotBlank(message = "O email do profissional é obrigatório") // Validação para garantir que o email não seja vazio
+    @Size(max = 100, message = "O email do profissional deve ter no máximo 100 caracteres") // Validação de tamanho do email
+    @Email(message = "O email deve ser válido") // Validação de formato de email
     private String email;
+
+    @Column(nullable = false) // Coluna não pode ser nula no banco de dados
+    @NotBlank(message = "O telefone do profissional é obrigatório") // Validação para garantir que o telefone não seja vazio
+    @Size(min = 10, max = 15, message = "O telefone do profissional deve ter entre 10 e 15 caracteres") // Validação de tamanho do telefone
+    @jakarta.validation.constraints.Pattern(regexp = "^\\+?[0-9]{10,15}$", message = "O telefone deve ser um número válido com até 15 dígitos") // Validação de formato de telefone
     private String phone;
 
     // Horário de almoço

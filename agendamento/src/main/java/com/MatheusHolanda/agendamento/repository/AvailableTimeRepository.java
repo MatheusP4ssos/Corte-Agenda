@@ -17,8 +17,10 @@ public interface AvailableTimeRepository extends JpaRepository <AvailableTime, L
     // Metodo para verificar se existe um horário disponível para um profissional em uma data e hora específica
     boolean existsByProfessionalAndDateTimeAndAvailableFalse(Professional professional, LocalDateTime current);
 
-// Busca um horário disponível para um profissional em uma data e hora específica
-Optional<AvailableTime> findByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime);
+    // Busca um horário disponível para um profissional em uma data e hora específica
+    Optional<AvailableTime> findByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime);
 
     List<AvailableTime> findByProfessionalAndAvailableTrue(Professional selectedProfessional);
+
+    boolean existsByProfessionalAndDateTime(Professional professional, LocalDateTime dateTime);
 }

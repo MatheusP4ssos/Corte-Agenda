@@ -1,12 +1,12 @@
 package com.MatheusHolanda.agendamento.service;
 
-import com.MatheusHolanda.agendamento.SchedullingException.ResourceNotFoundException;
-import com.MatheusHolanda.agendamento.SchedullingException.SchedulingConflictException;
 import com.MatheusHolanda.agendamento.domain.AvailableTime;
 import com.MatheusHolanda.agendamento.domain.Client;
 import com.MatheusHolanda.agendamento.domain.Professional;
 import com.MatheusHolanda.agendamento.domain.Scheduling;
 import com.MatheusHolanda.agendamento.domain.enums.SchedulingStatus;
+import com.MatheusHolanda.agendamento.exceptions.ResourceNotFoundException;
+import com.MatheusHolanda.agendamento.exceptions.SchedulingConflictException;
 import com.MatheusHolanda.agendamento.repository.AvailableTimeRepository;
 import com.MatheusHolanda.agendamento.repository.ClientRepository;
 import com.MatheusHolanda.agendamento.repository.ProfessionalRepository;
@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 @Service
 public class SchedulingService {
 
+
     /**
      * Serviço para gerenciamento de agendamento de consultas.
      * Este serviço permite agendar consultas, cancelar agendamentos e listar consultas por cliente.
@@ -30,7 +31,9 @@ public class SchedulingService {
     private final ProfessionalRepository professionalRepository;
     private final AvailableTimeRepository availableTimeRepository;
 
-    public SchedulingService(AvailableTimeService availableTimeService, SchedulingRepository schedulingRepository, ClientRepository clientRepository, ProfessionalRepository professionalRepository, AvailableTimeRepository availableTimeRepository) {
+    public SchedulingService(AvailableTimeService availableTimeService, SchedulingRepository schedulingRepository,
+                             ClientRepository clientRepository, ProfessionalRepository professionalRepository,
+                             AvailableTimeRepository availableTimeRepository) {
         this.availableTimeService = availableTimeService;
         this.schedulingRepository = schedulingRepository;
         this.clientRepository = clientRepository;
@@ -49,14 +52,30 @@ public class SchedulingService {
      */
     public void scheduleAppointment(Long clientId, Long professionalId, LocalDateTime dateTime) {
         Client client = clientRepository.findById(clientId).orElseThrow(()
-                -> new ResourceNotFoundException("Cliente não encontrado"));
+                -> new ResourceNotFoundException("Cliente não encontrado", "id", clientId.toString()));
         Professional professional = professionalRepository.findById(professionalId).orElseThrow(()
-                -> new ResourceNotFoundException("Profissional não encontrado"));
-        boolean isAvailable = availableTimeService.isTimeAvailable(professional, dateTime);
-        if (!isAvailable) {
+                -> new ResourceNotFoundException("Profissional não encontrado", "id", professionalId.toString()));
+
+        if (!availableTimeService.isTimeAvailable(professional, dateTime)) {
             throw new SchedulingConflictException("Horário não disponível");
         }
+
+        // Cria um novo agendamento
+        Scheduling scheduling = new Scheduling();
+        scheduling.setClient(client);
+        scheduling.setProfessional(professional);
+        scheduling.setDate(dateTime);
+        scheduling.setStatus(SchedulingStatus.SCHEDULED);
+        schedulingRepository.save(scheduling);
+
+        // Marca o horário como indisponível
+        AvailableTime availableTime = new AvailableTime();
+        availableTime.setProfessional(professional);
+        availableTime.setDateTime(dateTime);
+        availableTime.setAvailable(false);
+        availableTimeRepository.save(availableTime);
     }
+
 
     /**
      * Realiza o agendamento de serviços para um cliente.
@@ -78,40 +97,55 @@ public class SchedulingService {
         schedulingRepository.save(scheduling);
     }
 
+    public void releaseAvailableTime(Professional professional, LocalDateTime dateTime) {
+        AvailableTime availableTime = availableTimeRepository
+                .findByProfessionalAndDateTime(professional, dateTime)
+                .orElseThrow(() -> new ResourceNotFoundException("Horário não encontrado", "professionalId",
+                        professional.getId().toString()));
+        availableTime.setAvailable(true);
+        availableTimeRepository.save(availableTime);
+    }
 
     public void rescheduleAppointment(Long schedulingId, LocalDateTime newDateTime) {
-        Scheduling scheduling = schedulingRepository.findById(schedulingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
+        Scheduling oldScheduling = schedulingRepository.findById(schedulingId)
+                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado", "id", schedulingId.toString()));
 
-        if (newDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Não é possivel remarcar para uma data no passado");
-        }
-
-        Professional professional = scheduling.getProfessional();
-        boolean isAvailable = availableTimeService.isTimeAvailable(professional, newDateTime);
-
-        if (!isAvailable) {
+        // Verifica se o novo horário está disponível antes de cancelar
+        if (!availableTimeService.isTimeAvailable(oldScheduling.getProfessional(), newDateTime)) {
             throw new SchedulingConflictException("Novo horário não disponível");
         }
 
-        scheduling.setDate(newDateTime);
-        scheduling.setStatus(SchedulingStatus.SCHEDULED);
-        schedulingRepository.save(scheduling);
+        // Cancela o agendamento antigo
+        oldScheduling.setStatus(SchedulingStatus.CANCELED);
+        schedulingRepository.save(oldScheduling);
+
+        // Libera o horário antigo
+        releaseAvailableTime(oldScheduling.getProfessional(), oldScheduling.getDate());
+
+        // Cria um novo agendamento com a nova data
+        Scheduling newScheduling = new Scheduling();
+        newScheduling.setClient(oldScheduling.getClient());
+        newScheduling.setProfessional(oldScheduling.getProfessional());
+        newScheduling.setDate(newDateTime);
+        newScheduling.setStatus(SchedulingStatus.SCHEDULED);
+        schedulingRepository.save(newScheduling);
+
+        // Marca o novo horário como indisponível
+        AvailableTime newAvailableTime = new AvailableTime();
+        newAvailableTime.setProfessional(oldScheduling.getProfessional());
+        newAvailableTime.setDateTime(newDateTime);
+        newAvailableTime.setAvailable(false);
+        availableTimeRepository.save(newAvailableTime);
     }
+
 
     public void cancelScheduling(Long schedulingId) {
         Scheduling scheduling = schedulingRepository.findById(schedulingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado"));
+                .orElseThrow(() -> new SchedulingConflictException("Agendamento não encontrado", "id", schedulingId.toString()));
 
         scheduling.setStatus(SchedulingStatus.CANCELED);
         schedulingRepository.save(scheduling);
+        releaseAvailableTime(scheduling.getProfessional(), scheduling.getDate());
 
-        // Liberar o horário no serviço de horários disponíveis
-        AvailableTime time = availableTimeRepository
-                .findByProfessionalAndDateTime(scheduling.getProfessional(), scheduling.getDate())
-                .orElseThrow(() -> new ResourceNotFoundException("Horário não encontrado para o profissional"));
-
-        time.setAvailable(true); // Marca o horário como disponível novamente
-        availableTimeRepository.save(time);
     }
 }
