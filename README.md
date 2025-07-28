@@ -109,4 +109,7 @@ Este projeto está sob a licença [MIT](https://opensource.org/licenses/MIT).
 Matheus Holanda
 
 ---
-⌨️ com ❤️ por [Matheus Holanda]
+## 📞 Suporte
+#### 📧 Abra uma issue no repositório
+#### 🌟 Dê uma estrela se gostou do projeto
+#### 🔄 Contribua com um pull request
