@@ -29,8 +29,8 @@ public class AvailableTimeService {
     /**
      * Lista os horários disponíveis para um profissional em uma data específica.
      *
-     * @param professional    O profissional cujos horários serão verificados.
-     * @param date            A data para a qual os horários disponíveis serão listados.
+     * @param professional O profissional cujos horários serão listados.
+     * @param date         A data para a qual os horários serão listados.
      * @param intervalMinutes O intervalo em minutos entre os horários disponíveis.
      * @return Uma lista de LocalDateTime representando os horários disponíveis.
      */
@@ -40,14 +40,13 @@ public class AvailableTimeService {
             int intervalMinutes
     ) {
 
+        // Valida se o profissional, a data e o intervalo são válidos
         if (professional == null) {
             throw new ValidationException("O profissional não pode ser nulo.");
         }
-
         if (date == null) {
             throw new ValidationException("A data não pode ser nula.");
         }
-
         if (intervalMinutes <= 0) {
             throw new ValidationException("O intervalo deve ser maior que zero.");
         }
@@ -81,6 +80,13 @@ public class AvailableTimeService {
         return availableTimes;
     }
 
+    /**
+     * Adiciona um horário disponível para um profissional.
+     *
+     * @param professional O profissional para o qual o horário será adicionado.
+     * @param dateTime     A data e hora do horário a ser adicionado.
+     * @param available    Indica se o horário está disponível ou não.
+     */
     public void addAvailableTime(Professional professional,LocalDateTime dateTime, boolean available) {
         if (professional == null) {
             throw new ValidationException("O profissional não pode ser nulo.");
@@ -101,6 +107,13 @@ public class AvailableTimeService {
         availableTimeRepository.save(availableTime);
     }
 
+    /**
+     * Verifica se um horário específico está disponível para um profissional.
+     *
+     * @param professional O profissional a ser verificado.
+     * @param dateTime     A data e hora a serem verificadas.
+     * @return true se o horário estiver disponível, false caso contrário.
+     */
     public boolean isTimeAvailable(Professional professional, LocalDateTime dateTime) {
         if (dateTime == null || professional == null) {
             return false; // Se algum parâmetro for nulo, considera indisponível
@@ -110,6 +123,12 @@ public class AvailableTimeService {
         return !isOccupied; // Retorna true se não estiver ocupado, ou seja, disponível
     }
 
+    /**
+     * Obtém uma lista de horários disponíveis para um profissional.
+     *
+     * @param selectedProfessional O profissional selecionado.
+     * @return Uma lista de strings representando os horários disponíveis.
+     */
     public List<String> getAvailableTimes(Professional selectedProfessional) {
         if (selectedProfessional == null) {
             throw new ValidationException("O profissional selecionado não pode ser nulo.");

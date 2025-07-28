@@ -16,15 +16,17 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 
 
-@Service
+@Service // Anotação para indicar que esta classe é um serviço Spring
 public class SchedulingService {
-
 
     /**
      * Serviço para gerenciamento de agendamento de consultas.
      * Este serviço permite agendar consultas, cancelar agendamentos e listar consultas por cliente.
      */
 
+    // Dependências injetadas via construtor
+    // Essas dependências são usadas para acessar os repositórios e serviços necessários
+    // para realizar as operações de agendamento.
     private final AvailableTimeService availableTimeService;
     private final SchedulingRepository schedulingRepository;
     private final ClientRepository clientRepository;
@@ -97,6 +99,13 @@ public class SchedulingService {
         schedulingRepository.save(scheduling);
     }
 
+    /**
+     * Libera um horário específico para um profissional.
+     *
+     * @param professional O profissional cujo horário será liberado.
+     * @param dateTime    A data e hora do horário a ser liberado.
+     * @throws ResourceNotFoundException se o horário não for encontrado.
+     */
     public void releaseAvailableTime(Professional professional, LocalDateTime dateTime) {
         AvailableTime availableTime = availableTimeRepository
                 .findByProfessionalAndDateTime(professional, dateTime)
@@ -106,6 +115,14 @@ public class SchedulingService {
         availableTimeRepository.save(availableTime);
     }
 
+    /**
+     * Reagenda um agendamento existente para um novo horário.
+     *
+     * @param schedulingId O ID do agendamento a ser reagendado.
+     * @param newDateTime  O novo horário para o agendamento.
+     * @throws ResourceNotFoundException       se o agendamento não for encontrado.
+     * @throws SchedulingConflictException      se o novo horário não estiver disponível.
+     */
     public void rescheduleAppointment(Long schedulingId, LocalDateTime newDateTime) {
         Scheduling oldScheduling = schedulingRepository.findById(schedulingId)
                 .orElseThrow(() -> new ResourceNotFoundException("Agendamento não encontrado", "id", schedulingId.toString()));
@@ -138,7 +155,12 @@ public class SchedulingService {
         availableTimeRepository.save(newAvailableTime);
     }
 
-
+    /**
+     * Cancela um agendamento existente.
+     *
+     * @param schedulingId O ID do agendamento a ser cancelado.
+     * @throws ResourceNotFoundException se o agendamento não for encontrado.
+     */
     public void cancelScheduling(Long schedulingId) {
         Scheduling scheduling = schedulingRepository.findById(schedulingId)
                 .orElseThrow(() -> new SchedulingConflictException("Agendamento não encontrado", "id", schedulingId.toString()));

@@ -14,6 +14,11 @@ import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+    /**
+     * GlobalExceptionHandler é uma classe que trata exceções lançadas em toda a aplicação.
+     * Ela captura exceções específicas e retorna uma resposta padronizada com informações sobre o erro.
+     * As exceções tratadas incluem BaseException, MethodArgumentNotValidException e ConstraintViolationException.
+     */
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ErrorResponse> handleBaseException(BaseException ex, WebRequest request) {

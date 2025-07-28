@@ -4,15 +4,38 @@
 Sistema de agendamento desenvolvido em Spring Boot para gerenciamento de horários e serviços. O projeto permite o cadastro de clientes, profissionais e serviços, além do agendamento de horários.
 
 ## 🛠️ Tecnologias Utilizadas
-- Java 24
-- Spring Boot 3.5.3
+- Java 17+
+- Spring Boot
 - Spring Data JPA
 - PostgreSQL / H2 Database
 - Maven
 
 ## 📦 Estrutura do Projeto
-src/ ├── main/ │ ├── java/ │ │ └── com.MatheusHolanda.agendamento/ │ │ ├── config/ │ │ ├── controller/ │ │ ├── domain/ │ │ │ ├── enums/ │ │ │ ├── AvailableTime │ │ │ ├── Client │ │ │ ├── Professional │ │ │ ├── Scheduling │ │ │ └── Services │ │ ├── DTO/ │ │ ├── repository/ │ │ ├── service/ │ │ └── AgendamentoApplication │ └── resources/ │ ├── static/ │ ├── templates/ │ ├── application.properties │ ├── application-h2.properties │ └── application-postgres.properties
-
+📦 Estrutura do Projeto
+src/
+├── main/
+│   ├── java/
+│   │   └── com/MatheusHolanda/agendamento/
+│   │       ├── config/
+│   │       ├── controller/
+│   │       ├── domain/
+│   │       │   ├── enums/
+│   │       │   ├── AvailableTime/
+│   │       │   ├── Client/
+│   │       │   ├── Professional/
+│   │       │   ├── Scheduling/
+│   │       │   └── Services/
+│   │       ├── DTO/
+│   │       ├── exception/
+│   │       ├── repository/
+│   │       ├── service/
+│   │       └── AgendamentoApplication.java
+│   └── resources/
+│       ├── static/
+│       ├── templates/
+│       ├── application.properties
+│       ├── application-h2.properties
+│       └── application-postgres.properties
 ## 🚀 Como Executar
 ### Pré-requisitos
 - JDK 24
@@ -52,6 +75,9 @@ src/ ├── main/ │ ├── java/ │ │ └── com.MatheusHolanda.ag
    ```
 
 A aplicação estará disponível em `http://localhost:8080`
+
+## Modelo Conceitual
+![Modelo Conceitual](images/modeloconceitual.png)
 
 ## 📚 Funcionalidades
 - Cadastro de clientes
