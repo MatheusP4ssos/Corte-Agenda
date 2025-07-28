@@ -77,7 +77,7 @@ src/
 A aplicação estará disponível em `http://localhost:8080`
 
 ## Modelo Conceitual
-![Modelo Conceitual](images/modeloconceitual.png)
+![modeloConceitual](images/modeloConceitual.PNG)
 
 ## 📚 Funcionalidades
 - Cadastro de clientes
