@@ -1,9 +1,11 @@
 # Sistema de Agendamento
 
 ## 📋 Descrição
+
 Sistema de agendamento desenvolvido em Spring Boot para gerenciamento de horários e serviços. O projeto permite o cadastro de clientes, profissionais e serviços, além do agendamento de horários.
 
 ## 🛠️ Tecnologias Utilizadas
+
 - Java 17+
 - Spring Boot
 - Spring Data JPA
@@ -11,41 +13,50 @@ Sistema de agendamento desenvolvido em Spring Boot para gerenciamento de horári
 - Maven
 
 ## 📦 Estrutura do Projeto
+
 📦 Estrutura do Projeto
+
+```bash
 src/
-├── main/
-│   ├── java/
-│   │   └── com/MatheusHolanda/agendamento/
-│   │       ├── config/
-│   │       ├── controller/
-│   │       ├── domain/
-│   │       │   ├── enums/
-│   │       │   ├── AvailableTime/
-│   │       │   ├── Client/
-│   │       │   ├── Professional/
-│   │       │   ├── Scheduling/
-│   │       │   └── Services/
-│   │       ├── DTO/
-│   │       ├── exception/
-│   │       ├── repository/
-│   │       ├── service/
-│   │       └── AgendamentoApplication.java
-│   └── resources/
-│       ├── static/
-│       ├── templates/
-│       ├── application.properties
-│       ├── application-h2.properties
-│       └── application-postgres.properties
+└── main/
+    ├── java/
+    │   └── com/MatheusHolanda/agendamento/
+    │       ├── config/
+    │       ├── controller/
+    │       ├── domain/
+    │       │   ├── enums/
+    │       │   ├── AvailableTime/
+    │       │   ├── Client/
+    │       │   ├── Professional/
+    │       │   ├── Scheduling/
+    │       │   └── Services/
+    │       ├── DTO/
+    │       ├── exception/
+    │       ├── repository/
+    │       ├── service/
+    │       └── AgendamentoApplication.java
+    └── resources/
+        ├── static/
+        ├── templates/
+        ├── application.properties
+        ├── application-h2.properties
+        └── application-postgres.properties
+```
+
 ## 🚀 Como Executar
+
 ### Pré-requisitos
+
 - JDK 24
 - Maven
 - PostgreSQL (opcional - pode usar H2 para desenvolvimento)
 
 ### Configuração do Banco de Dados
+
 1. PostgreSQL
     - Crie um banco de dados PostgreSQL
     - Configure as credenciais no arquivo `application-postgres.properties`:
+
    ```properties
    spring.datasource.url=jdbc:postgresql://localhost:5432/nome_do_banco
    spring.datasource.username=seu_usuario
@@ -53,23 +64,29 @@ src/
    ```
 
 2. H2 (banco em memória para desenvolvimento)
+
 - Altere o perfil ativo no `application.properties`:
+
    ```properties
    spring.profiles.active=h2
    ```
 
 ### Executando a Aplicação
+
 1. Clone o repositório
+
    ```bash
    git clone [url-do-repositório]
    ```
 
 2. Entre na pasta do projeto
+
    ```bash
    cd agendamento
    ```
 
 3. Execute o projeto com Maven
+
    ```bash
    mvn spring-boot:run
    ```
@@ -77,9 +94,11 @@ src/
 A aplicação estará disponível em `http://localhost:8080`
 
 ## Modelo Conceitual
+
 ![modeloConceitual](images/modeloConceitual.PNG)
 
 ## 📚 Funcionalidades
+
 - Cadastro de clientes
 - Cadastro de profissionais
 - Gerenciamento de serviços
@@ -87,6 +106,7 @@ A aplicação estará disponível em `http://localhost:8080`
 - Consulta de disponibilidade
 
 ## 🔍 Endpoints da API
+
 - `GET /api/clients` - Lista todos os clientes
 - `POST /api/clients` - Cadastra novo cliente
 - `GET /api/professionals` - Lista todos os profissionais
@@ -95,7 +115,9 @@ A aplicação estará disponível em `http://localhost:8080`
 - `POST /api/scheduling` - Realiza um agendamento
 
 ## 👥 Contribuição
+
 Contribuições são bem-vindas! Para contribuir:
+
 1. Faça um fork do projeto
 2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
 3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
@@ -103,13 +125,19 @@ Contribuições são bem-vindas! Para contribuir:
 5. Abra um Pull Request
 
 ## 📝 Licença
+
 Este projeto está sob a licença [MIT](https://opensource.org/licenses/MIT).
 
 ## ✒️ Autor
+
 Matheus Holanda
 
 ---
+
 ## 📞 Suporte
+
 #### 📧 Abra uma issue no repositório
+
 #### 🌟 Dê uma estrela se gostou do projeto
+
 #### 🔄 Contribua com um pull request
